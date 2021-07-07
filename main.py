@@ -16,6 +16,9 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setFixedSize(430, 300)
+
+        self.is_on = True
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
 
@@ -75,7 +78,8 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(MainWindow)
 
-        self.pushButton.clicked.connect(self.apply_changes)
+        #self.pushButton.clicked.connect(self.apply_changes)
+        self.pushButton.clicked.connect(self.on_off_switch)
 
         self.connect_slider_to_textbox(self.BrightnessSlider, self.lineEdit)
         self.connect_slider_to_textbox(self.TemperatureSlider, self.lineEdit_2)
@@ -83,15 +87,20 @@ class Ui_MainWindow(object):
         self.connect_textbox_to_slider(self.BrightnessSlider, self.lineEdit)
         self.connect_textbox_to_slider(self.TemperatureSlider, self.lineEdit_2)
 
+        self.BrightnessSlider.setValue(70)
+        self.TemperatureSlider.setValue(3000)
+
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def apply_changes(self):
         current_screen = self.screens_comboBox.currentText()
-        brightness = self.BrightnessSlider.value()
-        temperature = self.TemperatureSlider.value()
+        brightness = int(self.BrightnessSlider.value())
+        temperature = int(self.TemperatureSlider.value())
         
-        #print(current_screen, brightness, xrandr.temperature_to_rgb(temperature))
-        xrandr.change_screen_details(current_screen, brightness/100, xrandr.temperature_to_rgb(temperature))
+        gamma = xrandr.tuple_to_string(xrandr.temperature_to_rgb(temperature))
+        #print(current_screen, a, b)
+        xrandr.change_screen_details(current_screen, brightness/100, gamma)
 
     def connect_slider_to_textbox(self, slider, textbox):
         textbox.setText(str(slider.value()))
@@ -99,6 +108,19 @@ class Ui_MainWindow(object):
 
     def connect_textbox_to_slider(self, slider, textbox):
         textbox.textChanged.connect(lambda: slider.setValue(int(textbox.text()) if textbox.text().isdigit() else 0))
+
+
+    def on_off_switch(self):
+        if self.is_on:
+            self.is_on = False
+
+            current_screen = self.screens_comboBox.currentText()
+            gamma = xrandr.tuple_to_string((1,1,1))
+            xrandr.change_screen_details(current_screen, 1, gamma)
+        else:
+            self.is_on = True
+            self.apply_changes()
+
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtCore.QCoreApplication.translate("MainWindow", u"enter title here", None))

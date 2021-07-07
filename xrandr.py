@@ -29,13 +29,14 @@ def get_screens():
     return screens
 
 
-def change_screen_details(screen_name, brightness, temperature):
+def change_screen_details(screen_name, brightness, gamma):
     """
     brightness - float between 0 to 1 ex. 0.5
-    gamma - tuple of 3 floats between 0 to 1 ex. 1.0:1.0:1.0 !!!!!!!!!!!!!!!!!! CHANGE ME !!!!!!!!!!!!!!!!!!!!!!!
+    gamma - tuple of 3 floats between 0 to 1 ex. 1.0:1.0:1.0 
     """
-    gamma = tuple_to_string(temperature_to_rgb(temperature))
-    subprocess.run(['xrandr', '--output', screen_name, '--gamma',gamma, '--brightness', brightness], capture_output=False)
+    #gamma = tuple_to_string(temperature_to_rgb(temperature))
+    print("gamma:", gamma, "\n")
+    subprocess.run(['xrandr', '--output', screen_name, '--gamma',gamma, '--brightness', str(brightness)], capture_output=False)
     # xrandr --output DP-1-1 --gamma 1:1:1 --brightness 1.0
 
 def minimize_float(f):
@@ -92,8 +93,7 @@ def temperature_to_rgb(temperature):
             elif blue > 255:
                 blue = 255
     
-    #rgb = (red/255, green/255, blue/255)
-    rgb = (red,green,blue)
+    rgb = (red/255, green/255, blue/255)
     rgb = tuple(map(minimize_float, rgb))
     
 
