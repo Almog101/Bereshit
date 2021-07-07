@@ -15,7 +15,6 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(430, 300)
         MainWindow.setFixedSize(430, 300)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -64,18 +63,20 @@ class Ui_MainWindow(object):
         self.lineEdit_2.setObjectName(u"lineEdit_2")
         self.lineEdit_2.setGeometry(QtCore.QRect(380, 130, 40, 34))
 
-        MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QtCore.QRect(0, 0, 430, 32))
-        MainWindow.setMenuBar(self.menubar)
+
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
+        MainWindow.setStatusBar(self.statusbar)
+        MainWindow.setMenuBar(self.menubar)
+        MainWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(MainWindow)
 
         self.pushButton.clicked.connect(self.apply_changes)
+
         self.connect_slider_to_textbox(self.BrightnessSlider, self.lineEdit)
         self.connect_slider_to_textbox(self.TemperatureSlider, self.lineEdit_2)
 
@@ -83,15 +84,14 @@ class Ui_MainWindow(object):
         self.connect_textbox_to_slider(self.TemperatureSlider, self.lineEdit_2)
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-    # setupUi
 
     def apply_changes(self):
         current_screen = self.screens_comboBox.currentText()
         brightness = self.BrightnessSlider.value()
         temperature = self.TemperatureSlider.value()
         
-        print(current_screen, brightness, xrandr.temperature_to_rgb(temperature))
-        # xrandr.change_screen_details(current_screen)
+        #print(current_screen, brightness, xrandr.temperature_to_rgb(temperature))
+        xrandr.change_screen_details(current_screen, brightness/100, xrandr.temperature_to_rgb(temperature))
 
     def connect_slider_to_textbox(self, slider, textbox):
         textbox.setText(str(slider.value()))
@@ -106,7 +106,6 @@ class Ui_MainWindow(object):
         self.label.setText(QtCore.QCoreApplication.translate("MainWindow", u"Brightness ", None))
         self.label_2.setText(QtCore.QCoreApplication.translate("MainWindow", u"Temperature", None))
         self.pushButton.setText(QtCore.QCoreApplication.translate("MainWindow", u"Turn ON/OFF", None))
-    # retranslateUi
 
 
 if __name__ == "__main__":
