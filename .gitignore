@@ -1,4 +1,5 @@
-nightlight_app
+Bereshit_venv
 .vim
 _pycache_
 __pycache__/xrandr.cpython-39.pyc
+.vscode/settings.json
