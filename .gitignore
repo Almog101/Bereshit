@@ -1,5 +1,5 @@
-Bereshit_venv
-.vim
-_pycache_
-__pycache__/xrandr.cpython-39.pyc
-.vscode/settings.json
+.vscode
+bereshit_venv
+test.py
+__pycache__
+main.ui
