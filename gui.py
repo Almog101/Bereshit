@@ -3,7 +3,17 @@ import PySide2.QtWidgets as QtWidgets
 import PySide2.QtCore as QtCore
 import xrandr
 
-       
+ICON_PATH = "./src/icon.png"
+
+class SystemTryWidgit:
+    def setupUi(self, MainWindow):
+        self.tray = QtWidgets.QSystemTrayIcon()
+        self.tray.setIcon(QtGui.QIcon(ICON_PATH))
+        self.tray.setVisible(True)
+        
+        self.tray.activated.connect(lambda: MainWindow.show())
+
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
