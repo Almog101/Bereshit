@@ -5,12 +5,20 @@ import xrandr
 
 ICON_PATH = "./src/icon.png"
 
+WIDTH = 430
+HEIGHT = 260
+
+MIN_BRIGHTNESS = 30
+MAX_BRIGHTNESS = 100
+
+MIN_TEMPERATURE = 2000
+MAX_TEMPERATURE = 5000
+
 class SystemTryWidgit:
     def setupUi(self, MainWindow, app):
         self.tray = QtWidgets.QSystemTrayIcon()
         self.tray.setIcon(QtGui.QIcon(ICON_PATH))
         self.tray.setVisible(True)
-        
         self.tray.activated.connect(lambda: MainWindow.show())
 
         # Creating the options
@@ -29,65 +37,46 @@ class SystemTryWidgit:
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        if not MainWindow.objectName():
-            MainWindow.setObjectName(u"MainWindow")
-        MainWindow.setFixedSize(430, 300)
-
+        MainWindow.setFixedSize(WIDTH, HEIGHT)
         self.is_on = False
-
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName(u"centralwidget")
 
-        self.allscreens_checkBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.allscreens_checkBox.setObjectName(u"allscreens_checkBox")
-        self.allscreens_checkBox.setGeometry(QtCore.QRect(250, 20, 100, 35))
+        self.allscreens_check_box = QtWidgets.QCheckBox(self.centralwidget)
+        self.allscreens_check_box.setGeometry(QtCore.QRect(250, 20, 100, 35))
 
         self.screens_comboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.screens_comboBox.setObjectName(u"screens_comboBox")
         self.screens_comboBox.setGeometry(QtCore.QRect(80, 20, 120, 35))
         self.screens_comboBox.addItems(xrandr.get_screens())
 
-        self.BrightnessSlider = QtWidgets.QSlider(self.centralwidget)
-        self.BrightnessSlider.setObjectName(u"BrightnessSlider")
-        self.BrightnessSlider.setGeometry(QtCore.QRect(160, 90, 210, 20))
-        self.BrightnessSlider.setOrientation(QtCore.Qt.Horizontal)
-        self.BrightnessSlider.setMinimum(30)
-        self.BrightnessSlider.setMaximum(100)
+        self.brightness_slider = QtWidgets.QSlider(self.centralwidget)
+        self.brightness_slider.setGeometry(QtCore.QRect(160, 90, 210, 20))
+        self.brightness_slider.setOrientation(QtCore.Qt.Horizontal)
+        self.brightness_slider.setRange(MIN_BRIGHTNESS, MAX_BRIGHTNESS)
+        
+        self.temperature_slider = QtWidgets.QSlider(self.centralwidget)
+        self.temperature_slider.setGeometry(QtCore.QRect(160, 140, 210, 20))
+        self.temperature_slider.setOrientation(QtCore.Qt.Horizontal)
+        self.temperature_slider.setRange(MIN_TEMPERATURE, MAX_TEMPERATURE)
 
-        self.TemperatureSlider = QtWidgets.QSlider(self.centralwidget)
-        self.TemperatureSlider.setObjectName(u"TemperatureSlider")
-        self.TemperatureSlider.setGeometry(QtCore.QRect(160, 140, 210, 20))
-        self.TemperatureSlider.setOrientation(QtCore.Qt.Horizontal)
-        self.TemperatureSlider.setMinimum(2000)
-        self.TemperatureSlider.setMaximum(5000)
-        self.TemperatureSlider.setTickInterval(500)
+        self.brightness_label = QtWidgets.QLabel(self.centralwidget)
+        self.brightness_label.setGeometry(QtCore.QRect(40, 90, 80, 20))
 
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setObjectName(u"label")
-        self.label.setGeometry(QtCore.QRect(40, 90, 80, 20))
-
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QtCore.QRect(40, 140, 90, 20))
+        self.temperature_label = QtWidgets.QLabel(self.centralwidget)
+        self.temperature_label.setGeometry(QtCore.QRect(40, 140, 90, 20))
 
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setObjectName(u"pushButton")
         self.pushButton.setGeometry(QtCore.QRect(115, 190, 200, 36))
 
-        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setGeometry(QtCore.QRect(380, 80, 40, 34))
+        self.brightness_line_edit = QtWidgets.QLineEdit(self.centralwidget)
+        self.brightness_line_edit.setGeometry(QtCore.QRect(380, 80, 40, 34))
 
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_2.setObjectName(u"lineEdit_2")
-        self.lineEdit_2.setGeometry(QtCore.QRect(380, 130, 40, 34))
+        self.temperature_line_edit = QtWidgets.QLineEdit(self.centralwidget)
+        self.temperature_line_edit.setGeometry(QtCore.QRect(380, 130, 40, 34))
 
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QtCore.QRect(0, 0, 430, 32))
 
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
 
         MainWindow.setStatusBar(self.statusbar)
         MainWindow.setMenuBar(self.menubar)
@@ -96,17 +85,14 @@ class Ui_MainWindow(object):
 
         self.pushButton.clicked.connect(self.on_off_switch)
 
-        self.connect_slider_to_textbox(self.BrightnessSlider, self.lineEdit)
-        self.connect_slider_to_textbox(self.TemperatureSlider, self.lineEdit_2)
+        self.connect_slider_and_textbox(self.brightness_slider, self.brightness_line_edit)
+        self.connect_slider_and_textbox(self.temperature_slider, self.temperature_line_edit)
 
-        self.connect_textbox_to_slider(self.BrightnessSlider, self.lineEdit)
-        self.connect_textbox_to_slider(self.TemperatureSlider, self.lineEdit_2)
+        self.brightness_slider.setValue(MAX_BRIGHTNESS)
+        self.temperature_slider.setValue(MAX_TEMPERATURE)
 
-        self.BrightnessSlider.setValue(100)
-        self.TemperatureSlider.setValue(5000)
-
-        self.BrightnessSlider.valueChanged.connect(lambda: self.apply_changes())
-        self.TemperatureSlider.valueChanged.connect(lambda: self.apply_changes())
+        self.brightness_slider.valueChanged.connect(lambda: self.apply_changes())
+        self.temperature_slider.valueChanged.connect(lambda: self.apply_changes())
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -114,41 +100,41 @@ class Ui_MainWindow(object):
         if not self.is_on:
             return
 
-        current_screen = self.screens_comboBox.currentText()
-        brightness = int(self.BrightnessSlider.value())
-        temperature = int(self.TemperatureSlider.value())
-        
+        if self.allscreens_check_box.isChecked():
+            screens = [self.screens_comboBox.itemText(i) for i in range(self.screens_comboBox.count())]
+        else:
+            screens = [self.screens_comboBox.currentText()]
+
+        brightness = int(self.brightness_slider.value())
+        temperature = int(self.temperature_slider.value())
         gamma = xrandr.tuple_to_string(xrandr.temperature_to_rgb(temperature))
-        xrandr.change_screen_details(current_screen, brightness/100, gamma)
+        
+        for screen in screens:
+            xrandr.change_screen_details(screen, brightness/100, gamma)
 
         print(f"Brightness: {brightness}, Temperature: {temperature}")
 
-    def connect_slider_to_textbox(self, slider, textbox):
-        textbox.setText(str(slider.value()))
-
-        slider.valueChanged.connect(lambda: textbox.setText(str(slider.value())))
-
-    def connect_textbox_to_slider(self, slider, textbox):
+    def connect_slider_and_textbox(self, slider, textbox):
         textbox.textChanged.connect(lambda: slider.setValue(int(textbox.text()) if textbox.text().isdigit() else 0))
-
+        slider.valueChanged.connect(lambda: textbox.setText(str(slider.value())))
+        textbox.setText(str(slider.value()))
 
     def on_off_switch(self):
         if self.is_on:
             self.is_on = False
 
             current_screen = self.screens_comboBox.currentText()
-            gamma = xrandr.tuple_to_string((1,1,1))
+            gamma = xrandr.tuple_to_string((1, 1, 1))
             xrandr.change_screen_details(current_screen, 1, gamma)
-
-            print(f"Brightness: 100, Temperature: Normal")
+            print("OFF")
         else:
             self.is_on = True
             self.apply_changes()
-
+            print("ON")
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtCore.QCoreApplication.translate("MainWindow", u"Bereshit", None))
-        self.allscreens_checkBox.setText(QtCore.QCoreApplication.translate("MainWindow", u"All Screens", None))
-        self.label.setText(QtCore.QCoreApplication.translate("MainWindow", u"Brightness ", None))
-        self.label_2.setText(QtCore.QCoreApplication.translate("MainWindow", u"Temperature", None))
+        self.allscreens_check_box.setText(QtCore.QCoreApplication.translate("MainWindow", u"All Screens", None))
+        self.brightness_label.setText(QtCore.QCoreApplication.translate("MainWindow", u"Brightness ", None))
+        self.temperature_label.setText(QtCore.QCoreApplication.translate("MainWindow", u"Temperature", None))
         self.pushButton.setText(QtCore.QCoreApplication.translate("MainWindow", u"Turn ON/OFF", None))
