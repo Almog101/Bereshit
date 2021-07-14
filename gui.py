@@ -6,13 +6,25 @@ import xrandr
 ICON_PATH = "./src/icon.png"
 
 class SystemTryWidgit:
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, app):
         self.tray = QtWidgets.QSystemTrayIcon()
         self.tray.setIcon(QtGui.QIcon(ICON_PATH))
         self.tray.setVisible(True)
         
         self.tray.activated.connect(lambda: MainWindow.show())
 
+        # Creating the options
+        self.menu = QtWidgets.QMenu()
+        self.oepn = QtWidgets.QAction("Open")
+        self.quit = QtWidgets.QAction("Quit")
+        
+        self.quit.triggered.connect(app.quit)
+        self.oepn.triggered.connect(lambda: MainWindow.show())
+
+        self.menu.addAction(self.oepn)
+        self.menu.addAction(self.quit)
+
+        self.tray.setContextMenu(self.menu)
 
 
 class Ui_MainWindow(object):
@@ -135,7 +147,7 @@ class Ui_MainWindow(object):
 
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtCore.QCoreApplication.translate("MainWindow", u"enter title here", None))
+        MainWindow.setWindowTitle(QtCore.QCoreApplication.translate("MainWindow", u"Bereshit", None))
         self.allscreens_checkBox.setText(QtCore.QCoreApplication.translate("MainWindow", u"All Screens", None))
         self.label.setText(QtCore.QCoreApplication.translate("MainWindow", u"Brightness ", None))
         self.label_2.setText(QtCore.QCoreApplication.translate("MainWindow", u"Temperature", None))
