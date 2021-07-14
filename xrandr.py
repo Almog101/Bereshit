@@ -1,21 +1,6 @@
 import subprocess
 import math
 
-"""
-GAMMA_VALS=('1.0:0.7:0.4'  # 3000K
-            '1.0:0.7:0.5'  # 3500K
-            '1.0:0.8:0.6'  # 4000K
-            '1.0:0.8:0.7'  # 4500K
-            '1.0:0.9:0.8'  # 5000K
-            '1.0:0.9:0.9'  # 6000K
-            '1.0:1.0:1.0'  # 6500K
-            '0.9:0.9:1.0'  # 7000K
-            '0.8:0.9:1.0'  # 8000K
-            '0.8:0.8:1.0'  # 9000K
-            '0.7:0.8:1.0') # 10000K
-"""
-
-
 def get_screens():
     """
     returns a list of the names of connected screens
@@ -28,16 +13,12 @@ def get_screens():
             screens.append(screen_name)
     return screens
 
-
 def change_screen_details(screen_name, brightness, gamma):
     """
     brightness - float between 0 to 1 ex. 0.5
     gamma - tuple of 3 floats between 0 to 1 ex. 1.0:1.0:1.0 
     """
-    #gamma = tuple_to_string(temperature_to_rgb(temperature))
-    #print("gamma:", gamma, "\n")
     subprocess.run(['xrandr', '--output', screen_name, '--gamma',gamma, '--brightness', str(brightness)], capture_output=False)
-    # xrandr --output DP-1-1 --gamma 1:1:1 --brightness 1.0
 
 def minimize_float(f):
     return float('%.2f' % (f))
@@ -49,7 +30,6 @@ def temperature_to_rgb(temperature):
     temperature /= 100
 
     # ----- Red -----    
-
     if temperature <= 66:
         red = 255
     else:
@@ -61,7 +41,6 @@ def temperature_to_rgb(temperature):
             red = 255
 
     # ----- Green -----    
-
     if temperature <= 66:
         green = temperature
         green = 99.4708025861 * math.log(green, math.e) - 161.1195681661
@@ -79,7 +58,6 @@ def temperature_to_rgb(temperature):
  
 
     # ----- Blue -----    
-
     if temperature >= 66:
         blue = 255
     else:
@@ -96,8 +74,4 @@ def temperature_to_rgb(temperature):
     rgb = (red/255, green/255, blue/255)
     rgb = tuple(map(minimize_float, rgb))
     
-
     return rgb
-
-if __name__ == "__main__":
-    print(temperature_to_rgb(3000))
