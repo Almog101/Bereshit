@@ -35,7 +35,7 @@ def change_screen_details(screen_name, brightness, gamma):
     gamma - tuple of 3 floats between 0 to 1 ex. 1.0:1.0:1.0 
     """
     #gamma = tuple_to_string(temperature_to_rgb(temperature))
-    print("gamma:", gamma, "\n")
+    #print("gamma:", gamma, "\n")
     subprocess.run(['xrandr', '--output', screen_name, '--gamma',gamma, '--brightness', str(brightness)], capture_output=False)
     # xrandr --output DP-1-1 --gamma 1:1:1 --brightness 1.0
 

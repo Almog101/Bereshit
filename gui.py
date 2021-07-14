@@ -21,7 +21,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setFixedSize(430, 300)
 
-        self.is_on = True
+        self.is_on = False
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -33,21 +33,21 @@ class Ui_MainWindow(object):
         self.screens_comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.screens_comboBox.setObjectName(u"screens_comboBox")
         self.screens_comboBox.setGeometry(QtCore.QRect(80, 20, 120, 35))
-        # adds screens names to combo box
         self.screens_comboBox.addItems(xrandr.get_screens())
 
         self.BrightnessSlider = QtWidgets.QSlider(self.centralwidget)
         self.BrightnessSlider.setObjectName(u"BrightnessSlider")
         self.BrightnessSlider.setGeometry(QtCore.QRect(160, 90, 210, 20))
         self.BrightnessSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.BrightnessSlider.setMinimum(30)
         self.BrightnessSlider.setMaximum(100)
 
         self.TemperatureSlider = QtWidgets.QSlider(self.centralwidget)
         self.TemperatureSlider.setObjectName(u"TemperatureSlider")
         self.TemperatureSlider.setGeometry(QtCore.QRect(160, 140, 210, 20))
         self.TemperatureSlider.setOrientation(QtCore.Qt.Horizontal)
-        self.TemperatureSlider.setMinimum(1000)
-        self.TemperatureSlider.setMaximum(10000)
+        self.TemperatureSlider.setMinimum(2000)
+        self.TemperatureSlider.setMaximum(5000)
         self.TemperatureSlider.setTickInterval(500)
 
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -82,7 +82,6 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(MainWindow)
 
-        #self.pushButton.clicked.connect(self.apply_changes)
         self.pushButton.clicked.connect(self.on_off_switch)
 
         self.connect_slider_to_textbox(self.BrightnessSlider, self.lineEdit)
@@ -91,23 +90,30 @@ class Ui_MainWindow(object):
         self.connect_textbox_to_slider(self.BrightnessSlider, self.lineEdit)
         self.connect_textbox_to_slider(self.TemperatureSlider, self.lineEdit_2)
 
-        self.BrightnessSlider.setValue(70)
-        self.TemperatureSlider.setValue(3000)
+        self.BrightnessSlider.setValue(100)
+        self.TemperatureSlider.setValue(5000)
 
+        self.BrightnessSlider.valueChanged.connect(lambda: self.apply_changes())
+        self.TemperatureSlider.valueChanged.connect(lambda: self.apply_changes())
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def apply_changes(self):
+        if not self.is_on:
+            return
+
         current_screen = self.screens_comboBox.currentText()
         brightness = int(self.BrightnessSlider.value())
         temperature = int(self.TemperatureSlider.value())
         
         gamma = xrandr.tuple_to_string(xrandr.temperature_to_rgb(temperature))
-        #print(current_screen, a, b)
         xrandr.change_screen_details(current_screen, brightness/100, gamma)
+
+        print(f"Brightness: {brightness}, Temperature: {temperature}")
 
     def connect_slider_to_textbox(self, slider, textbox):
         textbox.setText(str(slider.value()))
+
         slider.valueChanged.connect(lambda: textbox.setText(str(slider.value())))
 
     def connect_textbox_to_slider(self, slider, textbox):
@@ -121,6 +127,8 @@ class Ui_MainWindow(object):
             current_screen = self.screens_comboBox.currentText()
             gamma = xrandr.tuple_to_string((1,1,1))
             xrandr.change_screen_details(current_screen, 1, gamma)
+
+            print(f"Brightness: 100, Temperature: Normal")
         else:
             self.is_on = True
             self.apply_changes()

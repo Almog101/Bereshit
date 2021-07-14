@@ -13,6 +13,7 @@ if __name__ == "__main__":
     tray_icon = SystemTryWidgit()
     tray_icon.setupUi(MainWindow)
     
-    
-    #MainWindow.show()
-    app.exec_()
+    ret = app.exec_()
+    sys.exit(ret)
+
+
