@@ -94,6 +94,9 @@ class Ui_MainWindow(object):
         self.brightness_slider.valueChanged.connect(lambda: self.apply_changes())
         self.temperature_slider.valueChanged.connect(lambda: self.apply_changes())
 
+        self.allscreens_check_box.stateChanged.connect(lambda: self.screens_comboBox.setEnabled(not self.allscreens_check_box.isChecked()))
+
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def apply_changes(self):
@@ -126,10 +129,12 @@ class Ui_MainWindow(object):
             current_screen = self.screens_comboBox.currentText()
             gamma = xrandr.tuple_to_string((1, 1, 1))
             xrandr.change_screen_details(current_screen, 1, gamma)
+
             print("OFF")
         else:
             self.is_on = True
             self.apply_changes()
+
             print("ON")
 
     def retranslateUi(self, MainWindow):

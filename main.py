@@ -5,7 +5,7 @@ from gui import Ui_MainWindow, SystemTryWidgit
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(False)
+    #app.setQuitOnLastWindowClosed(False)
 
     MainWindow = QMainWindow()
 
