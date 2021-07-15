@@ -115,8 +115,6 @@ class Ui_MainWindow(object):
         for screen in screens:
             xrandr.change_screen_details(screen, brightness/100, gamma)
 
-        print(f"Brightness: {brightness}, Temperature: {temperature}")
-
     def connect_slider_and_textbox(self, slider, textbox):
         textbox.textChanged.connect(lambda: slider.setValue(int(textbox.text()) if textbox.text().isdigit() else 0))
         slider.valueChanged.connect(lambda: textbox.setText(str(slider.value())))
