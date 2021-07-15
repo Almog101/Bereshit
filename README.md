@@ -24,6 +24,10 @@ $ python3 main.py
 
 This project is licensed under GNU GENERAL PUBLIC License - see the LICENSE file for details
 
+## Notes
+
+This project was only tested on Linux (Manjaro KDE)
+
 ## Acknowledgments
 
 Inspiration, code snippets, etc.
